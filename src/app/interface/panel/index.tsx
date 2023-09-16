@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, useTransition } from "react"
-// import AutoSizer from "react-virtualized-auto-sizer"
+import AutoSizer from "react-virtualized-auto-sizer"
 
 import { RenderedScene } from "@/types"
 
@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
 
-// import { see } from "@/app/engine/caption"
-// import { replaceTextInSpeechBubbles } from "@/lib/replaceTextInSpeechBubbles"
+import { see } from "@/app/engine/caption"
+import { replaceTextInSpeechBubbles } from "@/lib/replaceTextInSpeechBubbles"
 
 export function Panel({
   panel,
@@ -64,7 +64,7 @@ export function Panel({
   // since this run in its own loop, we need to use references everywhere
   // but perhaps this could be refactored
   useEffect(() => {
-    // console.log("Panel prompt: "+ prompt)
+    console.log("Panel prompt: "+ prompt)
     if (!prompt?.length) { return }
 
     // important: update the status, and clear the scene
@@ -76,14 +76,14 @@ export function Panel({
     setTimeout(() => {
       startTransition(async () => {
 
-      // console.log(`Loading panel ${panel}..`)
+      console.log(`Loading panel ${panel}..`)
     
       let newRendered: RenderedScene
       try {
-        newRendered = await newRender({ prompt, width, height })
+        newRendered = await newRender({ prompt, negativePrompt:[], width, height })
       } catch (err) {
         // "Failed to load the panel! Don't worry, we are retrying..")
-        newRendered = await newRender({ prompt, width, height })
+        newRendered = await newRender({ prompt,negativePrompt:[], width, height })
       }
 
       if (newRendered) {
@@ -137,7 +137,7 @@ export function Panel({
         (newRendered.status === "completed" && !newRendered.assetUrl?.length)) {
           // console.log(`panel got an error and/or an empty asset url :/ "${newRendered.error}", but let's try to recover..`)
           try {
-            const newAttempt = await newRender({ prompt, width, height })
+            const newAttempt = await newRender({ negativePrompt:[], prompt, width, height })
             setRendered(panelId, newAttempt)
           } catch (err) {
             console.error("yeah sorry, something is wrong.. aborting", err)
@@ -167,10 +167,6 @@ export function Panel({
     }
   }, [prompt, width, height])
 
-  /*
-  doing the captionning from the browser is expensive
-  a simpler solution is to caption directly during SDXL generation
-
   useEffect(() => {
     if (!rendered.assetUrl) { return }
     // the asset url can evolve with time (link to a better resolution image)
@@ -184,17 +180,16 @@ export function Panel({
           imageBase64: rendered.assetUrl 
         })
         if (newCaption) {
-          setCaption(newCaption)
+          setImageWithText(newCaption)
         }
       } catch (err) {
         console.error(`failed to generate the caption:`, err)
       }
     })
   }, [rendered.assetUrl, caption])
-  */
 
   const frameClassName = cn(
-    //`flex`,
+    `flex`,
     `w-full h-full`,
     `border-stone-800`,
     `transition-all duration-200 ease-in-out`,
@@ -207,10 +202,7 @@ export function Panel({
     `overflow-hidden`,
     `print:border-[1.5px] print:shadow-none`,
   )
-
-
-  /*
-  text detection (doesn't work)
+  
   useEffect(() => {
     const fn = async () => {
       if (!rendered.assetUrl || !ref.current) {
@@ -228,8 +220,6 @@ export function Panel({
     fn()
 
   }, [rendered.assetUrl, ref.current])
-  */
-
   if (prompt && !rendered.assetUrl) {
     return (
       <div className={cn(
@@ -295,7 +285,7 @@ export function Panel({
           alt={rendered.alt}
           className={cn(
             `comic-panel w-full h-full object-cover max-w-max`,
-            // showCaptions ? `-mt-11` : ''
+            showCaptions ? `-mt-11` : ''
             )}
         />}
     </div>

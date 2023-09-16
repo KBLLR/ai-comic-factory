@@ -59,7 +59,7 @@ export function BottomBar() {
 
   const handleShare = async () => {
     const dataUrl = await pageToImage()
-    // console.log("dataUrl:", dataUrl)
+    console.log("dataUrl:", dataUrl)
     const fileToUpload = base64ToFile(dataUrl, "comic.png")
     let uploadUrl = ""
     try {
@@ -68,7 +68,6 @@ export function BottomBar() {
     } catch (err) {
       console.error("Failed to upload the image to Hugging Face")
     }
-
 
     const descriptionMd = `
 #### Prompt:

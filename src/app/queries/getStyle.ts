@@ -47,6 +47,6 @@ export const getStory = async ({
     }
   }
 
-  const tmp = result // result.split("Caption:").pop() || result
+  const tmp = result.split("Caption:").pop() || result
   return tmp.replaceAll("\n", ", ")
 }

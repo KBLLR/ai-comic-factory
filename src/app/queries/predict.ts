@@ -5,7 +5,6 @@ import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
 
 const hf = new HfInference(process.env.HF_API_TOKEN)
 
-
 // note: we always try "inference endpoint" first
 const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
 const inferenceEndpoint = `${process.env.HF_INFERENCE_ENDPOINT_URL || ""}`
@@ -55,8 +54,8 @@ export async function predict(inputs: string) {
       parameters: {
         do_sample: true,
         // we don't require a lot of token for our task
-        max_new_tokens: 330, // 1150,
-        return_full_text: false,
+        max_new_tokens: 360, // 1150,
+        return_full_text: true,
       }
     })) {
       instructions += output.token.text

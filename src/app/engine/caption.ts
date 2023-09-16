@@ -33,12 +33,12 @@ export async function see({
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
+        Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
       },
       body: JSON.stringify(request),
       cache: 'no-store',
     // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-    // next: { revalidate: 1 }
+      next: { revalidate: 1 }
     })
 
     if (res.status !== 200) {

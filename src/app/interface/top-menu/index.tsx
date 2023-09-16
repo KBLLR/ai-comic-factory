@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { FontName, defaultFont } from "@/lib/fonts"
+import { FontName, defaultFont, fontList, fonts } from "@/lib/fonts"
 import { Input } from "@/components/ui/input"
 import { PresetName, defaultPreset, nonRandomPresets, presets } from "@/app/engine/presets"
 import { useStore } from "@/app/store"
@@ -35,8 +35,8 @@ const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
 }
 
 export function TopMenu() {
-   // const font = useStore(state => state.font)
-  // const setFont = useStore(state => state.setFont)
+  const font = useStore(state => state.font)
+  const setFont = useStore(state => state.setFont)
   const preset = useStore(state => state.preset)
   const prompt = useStore(state => state.prompt)
   const layout = useStore(state => state.layout)
@@ -80,7 +80,7 @@ export function TopMenu() {
     
   return (
     <div className={cn(
-      `print:hidden`,
+      `print:true`,
       `z-10 fixed top-0 left-0 right-0`,
       `flex flex-col md:flex-row w-full justify-between items-center`,
       `backdrop-blur-xl`,
@@ -96,7 +96,7 @@ export function TopMenu() {
           `flex-grow`
           )}>
 
-          {/* <Label className="flex text-2xs md:text-sm md:w-24">Style:</Label> */}
+          {<Label className="flex text-2xs md:text-sm md:w-24">Style:</Label>}
 
           <Select
             defaultValue={defaultPreset}
@@ -162,7 +162,7 @@ export function TopMenu() {
           <span className="inline md:hidden">Cap.</span>
         </Label>
         </div>
-        {/*
+        {
         <div className={cn(
           `transition-all duration-200 ease-in-out`,
           `flex flex-row items-center space-x-3 font-mono w-1/2 md:w-auto md:hidden`
@@ -188,7 +188,7 @@ export function TopMenu() {
             </SelectContent>
           </Select>
         </div>
-          */}
+          }
       </div>
       <div className={cn(
           `transition-all duration-200 ease-in-out`,
@@ -198,7 +198,7 @@ export function TopMenu() {
         <Input
           placeholder="Story"
           className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
-          // disabled={atLeastOnePanelIsBusy}
+          disabled={atLeastOnePanelIsBusy}
           onChange={(e) => {
             setDraftPrompt(e.target.value)
           }}
@@ -224,9 +224,7 @@ export function TopMenu() {
         </Button>
         </div>
       </div>
-      {/*
-        Let's add this feature later, because right now people
-        are confused about why they can't activate it
+      {
       <div className={cn(
           `transition-all duration-200 ease-in-out`,
           `hidden md:flex flex-row items-center space-x-3 font-mono w-full md:w-auto`
@@ -235,8 +233,8 @@ export function TopMenu() {
         <Select
           defaultValue={fontList.includes(preset.font) ? preset.font : "actionman"}
           onValueChange={(value) => { setFont(value as FontName) }}
-          // disabled={isBusy}
-          disabled={true}
+          disabled={isBusy}
+          // disabled={true}
           >
           <SelectTrigger className="flex-grow">
             <SelectValue className="text-2xs md:text-sm" placeholder="Type" />
@@ -253,7 +251,7 @@ export function TopMenu() {
           </SelectContent>
         </Select>
       </div>
-              */}
+              }
     </div>
   )
 }

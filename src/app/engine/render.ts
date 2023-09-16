@@ -18,16 +18,16 @@ const apiUrl = process.env.VIDEOCHAIN_API_URL
 
 export async function newRender({
   prompt,
-  // negativePrompt,
+  negativePrompt,
   width,
   height
 }: {
   prompt: string
-  // negativePrompt: string[]
+  negativePrompt: string[]
   width: number
   height: number
 }) {
-  // console.log(`newRender(${prompt})`)
+  console.log(`newRender(${prompt})`)
   if (!prompt) {
     console.error(`cannot call the rendering API without a prompt, aborting..`)
     throw new Error(`cannot call the rendering API without a prompt, aborting..`)
@@ -57,17 +57,18 @@ export async function newRender({
       }
       const replicate = new Replicate({ auth: replicateToken })
 
-      // console.log("Calling replicate..")
+      console.log("Calling replicate..")
       const seed = generateSeed()
       const prediction = await replicate.predictions.create({
         version: replicateModelVersion,
         input: { prompt, seed }
       })
       
-      // console.log("prediction:", prediction)
+      console.log("prediction:", prediction)
 
       // no need to reply straight away: good things take time
       // also our friends at Replicate won't like it if we spam them with requests
+
       await sleep(4000)
 
       return {
@@ -80,7 +81,7 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else {
-      // console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
+      console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
       const res = await fetch(`${apiUrl}/render`, {
         method: "POST",
         headers: {
@@ -90,11 +91,11 @@ export async function newRender({
         },
         body: JSON.stringify({
           prompt,
-          // negativePrompt, unused for now
+          negativePrompt,
           nbFrames: 1,
           nbSteps: 25, // 20 = fast, 30 = better, 50 = best
-          actionnables: [], // ["text block"],
-          segmentation: "disabled", // "firstframe", // one day we will remove this param, to make it automatic
+          actionnables: ["text block"], // ["text block"],
+          segmentation: "firstframe", // "firstframe", // one day we will remove this param, to make it automatic
           width,
           height,
 
@@ -105,17 +106,17 @@ export async function newRender({
           upscalingFactor: 1, // 2,
 
           // analyzing doesn't work yet, it seems..
-          analyze: false, // analyze: true,
+          analyze: true, // analyze: true,
 
           cache: "ignore"
         } as Partial<RenderRequest>),
         cache: 'no-store',
       // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-      // next: { revalidate: 1 }
+        next: { revalidate: 1 }
       })
 
 
-      // console.log("res:", res)
+      console.log("res:", res)
       // The return value is *not* serialized
       // You can return Date, Map, Set, etc.
       
@@ -124,7 +125,6 @@ export async function newRender({
         // This will activate the closest `error.js` Error Boundary
         throw new Error('Failed to fetch data')
       }
-      
       const response = (await res.json()) as RenderedScene
       return response
     }
@@ -134,7 +134,7 @@ export async function newRender({
   }
 }
 
-export async function getRender(renderId: string) {
+export async function getRender(renderId: string): Promise<RenderedScene> {
   if (!renderId) {
     console.error(`cannot call the rendering API without a renderId, aborting..`)
     throw new Error(`cannot call the rendering API without a renderId, aborting..`)
@@ -159,26 +159,26 @@ export async function getRender(renderId: string) {
         throw new Error(`you need to configure your REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
       }
 
-      // const replicate = new Replicate({ auth: replicateToken })
+      const replicate = new Replicate({ auth: replicateToken })
 
-      // console.log("Calling replicate..")
-      // const prediction = await replicate.predictions.get(renderId)
-      // console.log("Prediction:", prediction)
+      console.log("Calling replicate..")
+      const prediction = await replicate.predictions.get(renderId)
+      console.log("Prediction:", prediction)
 
-       // console.log(`calling GET https://api.replicate.com/v1/predictions/${renderId}`)
+       console.log(`calling GET https://api.replicate.com/v1/predictions/${renderId}`)
        const res = await fetch(`https://api.replicate.com/v1/predictions/${renderId}`, {
         method: "GET",
         headers: {
-          // Accept: "application/json",
+          Accept: "application/json",
           // "Content-Type": "application/json",
           Authorization: `Token ${replicateToken}`,
         },
         cache: 'no-store',
       // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-      // next: { revalidate: 1 }
+        next: { revalidate: 1 }
       })
     
-      // console.log("res:", res)
+        console.log("res:", res)
       // The return value is *not* serialized
       // You can return Date, Map, Set, etc.
       
@@ -189,7 +189,7 @@ export async function getRender(renderId: string) {
       }
       
       const response = (await res.json()) as any
-      // console.log("response:", response)
+      console.log("response:", response)
 
       return  {
         renderId,
@@ -201,7 +201,7 @@ export async function getRender(renderId: string) {
         segments: []
       } as RenderedScene
     } else {
-      // console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
+      console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
       const res = await fetch(`${apiUrl}/render/${renderId}`, {
         method: "GET",
         headers: {
@@ -211,10 +211,10 @@ export async function getRender(renderId: string) {
         },
         cache: 'no-store',
       // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-      // next: { revalidate: 1 }
+        next: { revalidate: 1 }
       })
 
-      // console.log("res:", res)
+        console.log("res:", res)
       // The return value is *not* serialized
       // You can return Date, Map, Set, etc.
       
@@ -225,7 +225,7 @@ export async function getRender(renderId: string) {
       }
       
       const response = (await res.json()) as RenderedScene
-      // console.log("response:", response)
+      console.log("response:", response)
       return response
     }
   } catch (err) {
@@ -254,7 +254,7 @@ export async function upscaleImage(image: string): Promise<{
   }
 
   try {
-    // console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
+    //console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
     const res = await fetch(`${apiUrl}/upscale`, {
       method: "POST",
       headers: {
@@ -282,7 +282,7 @@ export async function upscaleImage(image: string): Promise<{
       assetUrl: string
       error: string
     }
-    // console.log("response:", response)
+    console.log("response:", response)
     return response
   } catch (err) {
     console.error(err)

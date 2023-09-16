@@ -143,37 +143,6 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
-
-  /*
-  american_comic_40: {
-    label: "American (1940)",
-    family: "american",
-    color: "color",
-    font: "actionman",
-    llmPrompt: "american comic",
-    imagePrompt: (prompt: string) => [
-      `american comic about ${prompt}`,
-      "single panel",
-      "american comic",
-      "comicbook style",
-      "1940",
-      "40s",
-      "color comicbook",
-      "color drawing"
-    ],
-    negativePrompt: () => [
-      "manga",
-      "anime",
-      "american comic",
-      "action",
-      "grayscale",
-      "monochrome",
-      "photo",
-      "painting",
-      "3D render"
-    ],
-  },
-  */
   american_comic_50: {
     id: "american_comic_50",
     label: "American (1950)",
@@ -202,38 +171,6 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
-  /*
-  american_comic_60: {
-    label: "American (1960)",
-    family: "american",
-    color: "color",
-    font: "actionman",
-    llmPrompt: "american comic",
-    imagePrompt: (prompt: string) => [
-      `american comic about ${prompt}`,
-      "single panel",
-      "american comic",
-      "comicbook style",
-      "1960",
-      "60s",
-      "color comicbook",
-      "color drawing"
-    ],
-    negativePrompt: () => [
-      "manga",
-      "anime",
-      "american comic",
-      "action",
-      "grayscale",
-      "monochrome",
-      "photo",
-      "painting",
-      "3D render"
-    ],
-  },
-  */
-
-  
   flying_saucer: {
     id: "flying_saucer",
     label: "Flying saucer",
@@ -261,7 +198,7 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
- 
+
   humanoid: {
     id: "humanoid",
     label: "Humanoid",
@@ -361,10 +298,12 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "new movie",
     imagePrompt: (prompt: string) => [
+      `photorealistic`,
       `3D render`,
-      `Blender`,
-      `3D animation`,
+      `PBR`,
+      `realistic`,
       `Unreal engine`,
+      `in the style of Alphonse Mucha`,
       `${prompt}`,
     ],
     negativePrompt: () => [
@@ -422,57 +361,6 @@ export const presets: Record<string, Preset> = {
       "painting"
     ],
   },
-  /*
-  glass: {
-    id: "glass",
-    label: "Glass",
-    family: "european",
-    color: "color",
-    font: "actionman",
-    llmPrompt: "new movie",
-    imagePrompt: (prompt: string) => [
-      `stained glass`,
-      `vitrail`,
-      `stained glass`,
-      // `medieval color engraving`,
-      `${prompt}`,
-      `medieval`,
-    ],
-    negativePrompt: () => [
-      "manga",
-      "anime",
-      "american comic",
-      "grayscale",
-      "monochrome",
-      "painting"
-    ],
-  },
-  */
-  /*
-  voynich: {
-    id: "voynich",
-    label: "Voynich",
-    family: "european",
-    color: "color",
-    font: "actionman",
-    llmPrompt: "new movie",
-    imagePrompt: (prompt: string) => [
-      `voynich`,
-      `voynich page`,
-      // `medieval color engraving`,
-      `${prompt}`,
-      `medieval`,
-    ],
-    negativePrompt: () => [
-      "manga",
-      "anime",
-      "american comic",
-      "grayscale",
-      "monochrome",
-      "painting"
-    ],
-  },
-  */
   egyptian: {
     id: "egyptian",
     label: "Egyptian",
@@ -495,54 +383,6 @@ export const presets: Record<string, Preset> = {
       "painting"
     ],
   },
-  /*
-  psx: {
-    label: "PSX",
-    family: "european",
-    color: "color",
-    font: "actionman",
-    llmPrompt: "new movie",
-    imagePrompt: (prompt: string) => [
-      `videogame screenshot`,
-      `3dfx`,
-      `3D dos game`,
-      `software rendering`,
-      `${prompt}`,
-    ],
-    negativePrompt: () => [
-      "manga",
-      "anime",
-      "american comic",
-      "grayscale",
-      "monochrome",
-      "painting"
-    ],
-  },
-  */
- /*
-  pixel: {
-    label: "Pixel",
-    family: "european",
-    color: "color",
-    font: "actionman",
-    llmPrompt: "new movie",
-    imagePrompt: (prompt: string) => [
-      `pixelart`,
-      `isometric`,
-      `pixelated`,
-      `low res`,
-      `${prompt}`,
-    ],
-    negativePrompt: () => [
-      "manga",
-      "anime",
-      "american comic",
-      "grayscale",
-      "monochrome",
-      "painting"
-    ],
-  },
-  */
 }
 
 export type PresetName = keyof typeof presets
