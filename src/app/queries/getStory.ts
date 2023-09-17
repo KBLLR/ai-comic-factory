@@ -1,4 +1,5 @@
 import { createLlamaPrompt } from "@/lib/createLlamaPrompt"
+import { createOpenAIPrompt } from "@/lib/createOpenAIPrompt"
 import { dirtyLLMResponseCleaner } from "@/lib/dirtyLLMResponseCleaner"
 import { dirtyLLMJsonParser } from "@/lib/dirtyLLMJsonParser"
 import { dirtyCaptionCleaner } from "@/lib/dirtyCaptionCleaner"
@@ -16,13 +17,13 @@ export const getStory = async ({
   prompt: string;
 }): Promise<LLMResponse> => {
 
-  const query = createLlamaPrompt([
+  const query = createOpenAIPrompt([
     {
       role: "system",
       content: [
         `You are a comic book author specialized in ${preset.llmPrompt}`,
-        `Please write detailed drawing instructions and a one-sentence short caption for the 4 panels of a new silent comic book page.`,
-        `Give your response as a JSON array like this: \`Array<{ panel: number; instructions: string; caption: string}>\`.`,
+        `Please write detailed drawing instructions and a one-sentence short caption for each of the 4 panels of a new silent comic book page.`,
+        `Give each response as a JSON array like this: \`Array<{ panel: number; instructions: string; caption: string}>\`.`,
         // `Give your response as Markdown bullet points.`,
         `Be brief in your 4 instructions and captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc.`
       ].filter(item => item).join("\n")
@@ -54,7 +55,7 @@ export const getStory = async ({
     }
   }
 
-  // console.log("Raw response from LLM:", result)
+  console.log("Raw response from LLM:", result)
   const tmp = cleanJson(result)
   
   let llmResponse: LLMResponse = []

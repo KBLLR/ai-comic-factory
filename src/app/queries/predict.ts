@@ -3,7 +3,9 @@
 import { LLMEngine } from "@/types"
 import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
 
-const hf = new HfInference(process.env.HF_API_TOKEN)
+
+const hf = new HfInference(process.env.HF_API_TOKEN || process.env.OPENAI_API_KEY);
+
 
 // note: we always try "inference endpoint" first
 const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
@@ -49,17 +51,16 @@ export async function predict(inputs: string) {
   let instructions = ""
   try {
     for await (const output of api.textGenerationStream({
-      model: llmEngine ==="INFERENCE_ENDPOINT" ? undefined : (inferenceModel || undefined),
+      model: llmEngine === "INFERENCE_ENDPOINT" ? undefined : (inferenceModel || undefined),
       inputs,
       parameters: {
         do_sample: true,
-        // we don't require a lot of token for our task
-        max_new_tokens: 360, // 1150,
+        max_new_tokens: 100, // Adjust as necessary
         return_full_text: true,
-      }
+      },
     })) {
-      instructions += output.token.text
-      process.stdout.write(output.token.text)
+      instructions += output.token.text;
+      process.stdout.write(output.token.text);
       if (
         instructions.includes("</s>") || 
         instructions.includes("<s>") ||
@@ -67,27 +68,27 @@ export async function predict(inputs: string) {
         instructions.includes("[/INST]") ||
         instructions.includes("<SYS>") ||
         instructions.includes("</SYS>") ||
-        instructions.includes("<|end|>") ||
-        instructions.includes("<|assistant|>")
+        instructions.includes("") ||
+        instructions.includes("")
       ) {
-        break
+        break;
       }
     }
   } catch (err) {
-    console.error(`error during generation: ${err}`)
+    console.error(`error during generation: ${err}`);
   }
-
-  // need to do some cleanup of the garbage the LLM might have gave us
+  
+  // The rest of your existing code for cleanup
   return (
     instructions
-    .replaceAll("<|end|>", "")
+    .replaceAll("", "")
     .replaceAll("<s>", "")
     .replaceAll("</s>", "")
     .replaceAll("[INST]", "")
     .replaceAll("[/INST]", "") 
     .replaceAll("<SYS>", "")
     .replaceAll("</SYS>", "")
-    .replaceAll("<|assistant|>", "")
+    .replaceAll("", "")
     .replaceAll('""', '"')
-  )
-}
+  );
+}  

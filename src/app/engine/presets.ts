@@ -51,7 +51,7 @@ export const presets: Record<string, Preset> = {
       "grayscale",
       "intricate",
       "detailed",
-      // "drawing"
+      "drawing"
     ],
     negativePrompt: () => [
       "franco-belgian comic",
